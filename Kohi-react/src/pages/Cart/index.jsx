@@ -264,38 +264,36 @@ function Cart() {
                 <section className="flex flex-col w-full my-4">
                   <div className="flex flex-row uppercase lg:text-lg">
                     <p className="flex-[2_2_0%]">Subtotal</p>
-                    <p className="flex-1 lg:flex-none text-right">
-                      IDR{" "}
+                    <p className="flex-1 lg:flex-none text-right">                      
                       {n_f(
                         cart.reduce((acc, cur) => acc + cur.price * cur.qty, 0)
-                      )}
+                      )}{" "}VND
                     </p>
                   </div>
-                  <div className="flex flex-row uppercase lg:text-lg">
+                  {/* <div className="flex flex-row uppercase lg:text-lg">
                     <p className="flex-[2_2_0%]">Tax & Fees</p>
                     <p className="flex-1 lg:flex-none text-right">IDR 20.000</p>
                   </div>
                   <div className="flex flex-row uppercase lg:text-lg">
                     <p className="flex-[2_2_0%]">Shipping</p>
                     <p className="flex-1 lg:flex-none text-right">IDR 10.000</p>
-                  </div>
+                  </div> */}
                   <div className="flex flex-row uppercase  lg:text-xl font-bold my-10">
                     <p className="flex-[2_2_0%]">Total</p>
-                    <p className="flex-initial lg:flex-none">
-                      IDR{" "}
+                    <p className="flex-initial lg:flex-none">                      
                       {n_f(
                         cart.reduce(
                           (acc, cur) => acc + cur.price * cur.qty,
                           0
-                        ) + 30000
-                      )}
+                        )
+                      )}{" "}VND
                     </p>
                   </div>
                 </section>
               </section>
             </aside>
             <aside className="flex-1 flex flex-col gap-5">
-              <section className="text-white text-xl lg:text-2xl font-extrabold drop-shadow-lg text-center md:text-left relative items-center">
+              {/* <section className="text-white text-xl lg:text-2xl font-extrabold drop-shadow-lg text-center md:text-left relative items-center">
                 Address details
                 <button
                   onClick={editMode ? saveEditInfo : toggleEdit}
@@ -303,8 +301,8 @@ function Cart() {
                 >
                   {editMode ? "save" : "edit"}
                 </button>
-              </section>
-              <section className="bg-white rounded-xl  p-5 lg:p-7 space-y-2">
+              </section> */}
+              {/* <section className="bg-white rounded-xl  p-5 lg:p-7 space-y-2">
                 <div className="flex gap-1">
                   <b>Delivery</b> to
                   <input
@@ -334,7 +332,7 @@ function Cart() {
                   name="phone_number"
                   placeholder="phone number..."
                 />
-              </section>
+              </section> */}
               <section className="text-white text-xl lg:text-2xl font-extrabold drop-shadow-lg text-center md:text-left relative">
                 Payment method
               </section>
@@ -368,7 +366,7 @@ function Cart() {
                         fill="white"
                       />
                     </svg>
-                    Card
+                    Ví KOHI
                   </label>
                 </div>
                 <hr />
@@ -404,7 +402,7 @@ function Cart() {
                   </label>
                 </div>
                 <hr />
-                <div className="flex gap-2 items-center">
+                {/* <div className="flex gap-2 items-center">
                   <input
                     type="radio"
                     className="accent-tertiary w-4 h-4"
@@ -456,10 +454,10 @@ function Cart() {
                     </svg>
                     Cash on delivery
                   </label>
-                </div>
+                </div> */}
               </section>
               <button
-                disabled={disabled}
+                // disabled={disabled}
                 onClick={payHandler}
                 className={`${
                   isLoading && "loading"
