@@ -37,7 +37,7 @@ function GetAllProducts({ categoryId }) {
     <>
       <section className="grid grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 justify-items-center content-around gap-3 gap-y-16 mt-10">
         {products.map((product) => (
-          <Link to={`/products/detail/${product.id}`} key={product.id}>
+          <Link to="/cart" key={product.id}>
             <section className="relative w-36 bg-white shadow-lg hover:shadow-xl duration-200 p-5 rounded-3xl">
               <img
                 src={product.img ?? productPlaceholder}
