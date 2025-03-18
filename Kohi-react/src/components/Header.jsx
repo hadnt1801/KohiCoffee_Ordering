@@ -14,7 +14,7 @@ import {
 import burgerIcon from "../assets/icons/burger-menu-left.svg";
 import chatIcon from "../assets/icons/chat.svg";
 import placeholderProfile from "../assets/images/placeholder-profile.jpg";
-import logo from "../assets/jokopi.svg";
+import logo from "../assets/logocoffee.png";
 import { contextAct } from "../redux/slices/context.slice";
 import { profileAction } from "../redux/slices/profile.slice";
 import { uinfoAct } from "../redux/slices/userInfo.slice";
@@ -172,8 +172,8 @@ class Header extends Component {
           <div className=" flex global-px justify-between items-center">
             <div className="py-5 md:py-8 font-extrabold">
               <Link to="/" className=" flex flex-row justify-center gap-4">
-                <img src={logo} alt="logo" width="30px" />
-                <h1 className="text-xl">jokopi.</h1>
+                <img src={logo} alt="logo" width="60px" />
+                <h1 className="text-xl">KohiCoffee</h1>
               </Link>
             </div>
             <div className="navbar-burger select-none cursor-pointer lg:hidden py-4 flex gap-7 flex-row items-center">
