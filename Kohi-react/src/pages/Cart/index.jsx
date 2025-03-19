@@ -94,11 +94,11 @@ function Cart() {
   const controller = useMemo(() => new AbortController());
   const payHandler = () => {
     if (disabled) return;
-    if (userInfo.token === "") {
-      toast.error("Login to continue transaction");
-      navigate("/auth/login");
-      return;
-    }
+    // if (userInfo.token === "") {
+    //   toast.error("Login to continue transaction");
+    //   navigate("/auth/login");
+    //   return;
+    // }
     if (editMode) return toast.error("You have unsaved changes");
     if (cart.length < 1)
       return toast.error("Add at least 1 product to your cart");
@@ -458,6 +458,7 @@ function Cart() {
               </section>
               <button
                 // disabled={disabled}
+                disabled={!form.payment}
                 onClick={payHandler}
                 className={`${
                   isLoading && "loading"
