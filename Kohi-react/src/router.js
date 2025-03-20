@@ -39,7 +39,7 @@ const Routers = () => {
         <Route path="/" element={<TokenHandler />}>
           {/* Public Route */}
           <Route path="*" element={<NotFound />} />
-          <Route index element={<Mainpage />} />
+          <Route index element={<Products />} />
           <Route path="products/*" element={<Products title="Products" />}>
             <Route path="category/:id" element={""} />
           </Route>

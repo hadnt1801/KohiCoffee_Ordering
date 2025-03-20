@@ -1,110 +1,64 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  list: [],
-  payment_id: "",
-  delivery_id: "",
-  delivery_address: "",
-  notes: "",
+  items: [], // Mảng chứa sản phẩm
+  paymentInfo: { 
+    payment_id: "", 
+    method: "", 
+    provider: "" 
+  }, // Lưu toàn bộ thông tin thanh toán
   now: "",
-  phone_number: "",
+  customer_id: "",
 };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addtoCart: (prevState, action) => {
-      const exsistIdx = prevState.list.findIndex(
-        (item) =>
-          item.product_id === action.payload.product_id &&
-          item.size_id === action.payload.size_id
-      );
+    // Thêm sản phẩm vào giỏ hàng
+    addToCart: (state, action) => {
+      const { product_id, name, price, img } = action.payload;
+      const existingItem = state.items.find((item) => item.product_id === product_id);
 
-      const updatedItem = {
-        ...action.payload,
-        qty:
-          exsistIdx !== -1
-            ? prevState.list[exsistIdx].qty + action.payload.qty
-            : action.payload.qty,
-        subtotal:
-          exsistIdx !== -1
-            ? prevState.list[exsistIdx].subtotal + action.payload.subtotal
-            : action.payload.subtotal,
-      };
+      if (existingItem) {
+        existingItem.quantity += 1; // Nếu sản phẩm đã có, tăng số lượng
+      } else {
+        state.items.push({ product_id, name, price, img, quantity: 1 });
+      }
+    },
 
-      const updatedCart =
-        exsistIdx !== -1
-          ? [
-              ...prevState.list.slice(0, exsistIdx),
-              updatedItem,
-              ...prevState.list.slice(exsistIdx + 1),
-            ]
-          : [...prevState.list, updatedItem];
+    // Xóa một sản phẩm khỏi giỏ hàng
+    removeFromCart: (state, action) => {
+      state.items = state.items.filter((item) => item.product_id !== action.payload);
+    },
 
-      return {
-        ...prevState,
-        list: updatedCart,
+    // Thay thế toàn bộ giỏ hàng (chỉ chứa một sản phẩm mới)
+    replaceCart: (state, action) => {
+      state.items = action.payload.items || [];  // Chỉ thay thế bằng một sản phẩm duy nhất
+    },
+
+    // Cập nhật thông tin thanh toán (bao gồm payment_id, method, provider)
+    setPayment: (state, action) => {
+      state.paymentInfo = {
+        payment_id: action.payload.payment_id || "",
+        method: action.payload.method || "",
+        provider: action.payload.provider || "",
       };
     },
-    incrementQty: (prevState, action) => {
-      return {
-        ...prevState,
-        list: prevState.list.map((item) => {
-          if (
-            item.product_id === action.payload.product_id &&
-            item.size_id === action.payload.size_id
-          ) {
-            return {
-              ...item,
-              qty: item.qty + 1,
-              subtotal: item.subtotal + item.price,
-            };
-          }
-          return item;
-        }),
-      };
+
+    // Cập nhật thông tin khách hàng
+    setCustomer: (state, action) => {
+      state.customer_id = action.payload;
     },
-    decrementQty: (prevState, action) => {
-      return {
-        ...prevState,
-        list: prevState.list.map((item) => {
-          if (
-            item.product_id === action.payload.product_id &&
-            item.size_id === action.payload.size_id
-          ) {
-            if (item.qty === 1) {
-              return item;
-            }
-            return {
-              ...item,
-              qty: item.qty - 1,
-              subtotal: item.subtotal + item.price,
-            };
-          }
-          return item;
-        }),
-      };
+
+    // Đặt lại trạng thái đơn hàng
+    setNow: (state, action) => {
+      state.now = action.payload;
     },
-    removeFromCart: (prevState, action) => {
-      return {
-        ...prevState,
-        list: prevState.list.filter((item) => {
-          return !(
-            item.product_id === action.payload.product_id &&
-            item.size_id === action.payload.size_id
-          );
-        }),
-      };
-    },
-    resetCart: (prevState, action) => {
-      return { ...prevState, ...initialState };
-    },
-    setDelivery: (prevState, action) => {
-      return {
-        ...prevState,
-        ...action.payload,
-      };
+
+    // Xóa toàn bộ giỏ hàng và đặt lại dữ liệu
+    resetCart: (state) => {
+      return initialState; // Trả về trạng thái ban đầu
     },
   },
 });
