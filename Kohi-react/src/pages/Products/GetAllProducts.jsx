@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, NavLink, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-import penIcon from "../../assets/icons/icon-pen.svg";
 import productPlaceholder from "../../assets/images/placeholder-image.webp";
 import { n_f } from "../../utils/helpers";
 import withSearchParams from "../../utils/wrappers/withSearchParams.js";
 
 function GetAllProducts({ categoryId }) {
   const [products, setProducts] = useState([]);
-  const userInfo = useSelector((state) => state.userInfo);
   const { catId } = useParams();
 
   const mockProducts = [
-    { id: 1, name: "Cà phê sữa", price: 30000, img: productPlaceholder, category: "1" },
-    { id: 2, name: "Cà phê đen", price: 25000, img: productPlaceholder, category: "1" },
-    { id: 3, name: "Trà sữa", price: 35000, img: productPlaceholder, category: "2" },
-    { id: 4, name: "Matcha", price: 40000, img: productPlaceholder, category: "2" },
-    { id: 5, name: "Cappuccino", price: 45000, img: productPlaceholder, category: "1" },
-    { id: 6, name: "Espresso", price: 50000, img: productPlaceholder, category: "1" },
-    { id: 7, name: "Latte", price: 48000, img: productPlaceholder, category: "1" },
-    { id: 8, name: "Macchiato", price: 52000, img: productPlaceholder, category: "1" },
-    { id: 9, name: "Bánh ngọt", price: 25000, img: productPlaceholder, category: "3" },
-    { id: 10, name: "Add-on sữa", price: 10000, img: productPlaceholder, category: "4" }
+    { id: 1, name: "Espresso", price: 50000, img: productPlaceholder, category: "1", description: "Một tách cà phê đậm đà với hương vị nguyên bản." },
+    { id: 2, name: "Doppio", price: 55000, img: productPlaceholder, category: "1", description: "Gấp đôi lượng Espresso cho những ai thích sự mạnh mẽ." },
+    { id: 3, name: "Ristretto", price: 52000, img: productPlaceholder, category: "1", description: "Espresso cô đặc với hương vị đậm đà hơn." },
+    { id: 4, name: "Lungo", price: 53000, img: productPlaceholder, category: "1", description: "Espresso pha loãng hơn để có vị dịu nhẹ." },
+    { id: 5, name: "Cappuccino", price: 45000, img: productPlaceholder, category: "2", description: "Cà phê với lớp sữa bọt mịn màng." },
+    { id: 6, name: "Dry Cappuccino", price: 46000, img: productPlaceholder, category: "2", description: "Cappuccino ít sữa, nhiều bọt hơn." },
+    { id: 7, name: "Iced Cappuccino", price: 47000, img: productPlaceholder, category: "2", description: "Cappuccino ướp lạnh, thích hợp cho ngày nóng." },
+    { id: 8, name: "Latte", price: 48000, img: productPlaceholder, category: "3", description: "Cà phê sữa mịn màng với lớp sữa hấp dẫn." },
+    { id: 9, name: "Caramel Latte", price: 49000, img: productPlaceholder, category: "3", description: "Latte thơm ngon với caramel ngọt ngào." },
+    { id: 10, name: "Mocha Latte", price: 51000, img: productPlaceholder, category: "3", description: "Latte hòa quyện với hương vị sô-cô-la." },
+    { id: 11, name: "Americano", price: 40000, img: productPlaceholder, category: "4", description: "Cà phê đen pha loãng, nhẹ nhàng hơn Espresso." },
+    { id: 12, name: "Iced Americano", price: 42000, img: productPlaceholder, category: "4", description: "Americano ướp lạnh, sảng khoái." },
+    { id: 13, name: "Long Black", price: 45000, img: productPlaceholder, category: "4", description: "Giống Americano nhưng có sự khác biệt nhẹ trong pha chế." }
   ];
 
   useEffect(() => {
@@ -46,15 +47,8 @@ function GetAllProducts({ categoryId }) {
               />
               <div className="flex flex-col gap-5 content-between text-center">
                 <p className="font-black text-lg min-h-[102px]">{product.name}</p>
-                <p className="font-bold end text-tertiary">IDR {n_f(product.price)}</p>
-                {Number(userInfo.role) > 1 && (
-                  <NavLink
-                    to={`/products/edit/${product.id}`}
-                    className="bg-tertiary absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center hover:bg-primary-focus"
-                  >
-                    <img src={penIcon} className="w-4 h-4" />
-                  </NavLink>
-                )}
+                <p className="text-gray-600 text-sm">{product.description}</p>
+                <p className="font-bold end text-tertiary">{n_f(product.price)} VND</p>
               </div>
             </section>
           </Link>

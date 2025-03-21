@@ -14,7 +14,7 @@ import {
 import burgerIcon from "../assets/icons/burger-menu-left.svg";
 import chatIcon from "../assets/icons/chat.svg";
 import placeholderProfile from "../assets/images/placeholder-profile.jpg";
-import logo from "../assets/logocoffee.png";
+import logo from "../assets/kohicoffee.png";
 import { contextAct } from "../redux/slices/context.slice";
 import { profileAction } from "../redux/slices/profile.slice";
 import { uinfoAct } from "../redux/slices/userInfo.slice";
@@ -169,100 +169,25 @@ class Header extends Component {
           <Sidebar onClose={this.toggleNavbar} />
         </div>
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b-2 border-gray-100">
-          <div className=" flex global-px justify-between items-center">
-            <div className="py-5 md:py-8 font-extrabold">
-              <Link to="/" className=" flex flex-row justify-center gap-4">
-                <img src={logo} alt="logo" width="60px" />
-                <h1 className="text-xl">KohiCoffee</h1>
+          <div className="flex global-px justify-between items-center">
+            <div className="flex-1 flex justify-center py-2 md:py-3">
+              <Link to="/products?q=all" className="flex flex-row items-center gap-4">
+                <img src={logo} alt="logo" className="w-48 md:w-56" />
               </Link>
             </div>
-            <div className="navbar-burger select-none cursor-pointer lg:hidden py-4 flex gap-7 flex-row items-center">
-              <div
-                ref={this.searchRef}
-                className="search-section cursor-pointer relative"
-                onClick={() =>
-                  this.setState((prevState) => ({
-                    ...prevState,
-                    isSearchOpen: !prevState.isSearchOpen,
-                  }))
-                }
+            <div className="navbar-burger select-none cursor-pointer lg:hidden py-4 flex gap-7 items-center">
+              <div ref={this.searchRef} className="search-section cursor-pointer relative"
+                onClick={() => this.setState({ isSearchOpen: !this.state.isSearchOpen })}
               >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 17 17"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M16 16L12.375 12.375M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z"
-                    stroke="#4F5665"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+                <svg width="26" height="26" viewBox="0 0 17 17" fill="none">
+                  <path d="M16 16L12.375 12.375M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z"
+                    stroke="#4F5665" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              {!_.isEmpty(this.props.userInfo.token) && (
-                <a href="" className="relative">
-                  <div className="absolute -left-2 -top-2 h-4 w-4 bg-tertiary rounded-full text-white flex text-[0.70rem] items-center justify-center font-extrabold">
-                    9+
-                  </div>
-                  <img src={chatIcon} alt="" width="24px" />
-                </a>
-              )}
               <button onClick={this.toggleNavbar}>
-                <img
-                  src={burgerIcon}
-                  width="30px"
-                  className="aspect-square"
-                  alt=""
-                />
+                <img src={burgerIcon} width="32px" className="aspect-square" alt="" />
               </button>
             </div>
-            <nav className="py-6 hidden lg:flex flex-row gap-8 justify-center">
-              {/* <li className="list-none" key="Home Page">
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive ? "font-bold text-[#6A4029]" : ""
-                  }
-                >
-                  Home
-                </NavLink>
-              </li> */}
-              <li className="list-none" key="Product">
-                <NavLink
-                  to="/products"
-                  className={({ isActive }) =>
-                    isActive ? "font-bold text-[#6A4029]" : ""
-                  }
-                >
-                  Products
-                </NavLink>
-              </li>
-              <li className="list-none" key="Cart">
-                <NavLink
-                  to="/cart"
-                  className={({ isActive }) =>
-                    isActive ? "font-bold text-[#6A4029]" : ""
-                  }
-                >
-                  Your Cart
-                </NavLink>
-              </li>
-              {/* <li className="list-none" key="History">
-                <NavLink
-                  to="/history"
-                  className={({ isActive }) =>
-                    isActive ? "font-bold text-[#6A4029]" : ""
-                  }
-                >
-                  History
-                </NavLink>
-              </li> */}
-            </nav>
-           
           </div>
         </header>
       </>
