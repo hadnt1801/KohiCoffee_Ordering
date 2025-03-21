@@ -20,7 +20,7 @@ function GetAllProducts({ categoryId }) {
     { id: 7, name: "Iced Cappuccino", price: 47000, img: productPlaceholder, category: "2", description: "Cappuccino ướp lạnh, thích hợp cho ngày nóng." },
     { id: 8, name: "Latte", price: 48000, img: productPlaceholder, category: "3", description: "Cà phê sữa mịn màng với lớp sữa hấp dẫn." },
     { id: 9, name: "Caramel Latte", price: 49000, img: productPlaceholder, category: "3", description: "Latte thơm ngon với caramel ngọt ngào." },
-    { id: 10, name: "Mocha Latte", price: 51000, img: productPlaceholder, category: "3", description: "Latte hòa quyện với hương vị sô-cô-la." },
+    { id: 10, name: "Mocha Latte", price: 51000, img: productPlaceholder, category: "3", description: "Latte hòa quyện với hương vị socola." },
     { id: 11, name: "Americano", price: 40000, img: productPlaceholder, category: "4", description: "Cà phê đen pha loãng, nhẹ nhàng hơn Espresso." },
     { id: 12, name: "Iced Americano", price: 42000, img: productPlaceholder, category: "4", description: "Americano ướp lạnh, sảng khoái." },
     { id: 13, name: "Long Black", price: 45000, img: productPlaceholder, category: "4", description: "Giống Americano nhưng có sự khác biệt nhẹ trong pha chế." }
