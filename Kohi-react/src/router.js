@@ -22,6 +22,8 @@ import Profile from "./pages/Profile";
 import EditPromo from "./pages/Promo/EditPromo";
 import NewPromo from "./pages/Promo/NewPromo";
 import ScrollToTop from "./utils/scrollToTop";
+import Success from "./pages/Cart/Success";
+import Process from "./pages/Cart/process";
 import {
   CheckAuth,
   CheckIsAdmin,
@@ -48,6 +50,8 @@ const Routers = () => {
             element={<ProductDetail />}
           />
           <Route path="cart" element={<Cart />} />
+          <Route path="successful" element={<Success />} />
+          <Route path="process" element={<Process />} />
 
           {/* Route which must not logged in */}
           <Route
