@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tạo một instance axios với base URL API
 export const axiosInstance = axios.create({
-    baseURL: 'https://9cfb-1-55-81-229.ngrok-free.app/api',
+    baseURL: 'https://coffeeshop.ngrok.app/swagger/index.html',
     headers: {
         'Content-Type': 'application/json',
         accept: '*/*'

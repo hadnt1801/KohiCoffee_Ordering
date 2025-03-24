@@ -14,7 +14,7 @@ function GetAllProducts() {
   async function fetchProduct() {
     try {
       const response = await axiosInstance.get(
-        "https://9cfb-1-55-81-229.ngrok-free.app/api/product",
+        "https://coffeeshop.ngrok.app/api/product?sortBy=ProductId&isAscending=true&page=1&pageSize=10",
         {
           params: {
             sortBy: "ProductId",

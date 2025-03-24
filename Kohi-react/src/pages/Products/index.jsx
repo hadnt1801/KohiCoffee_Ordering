@@ -5,11 +5,31 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import useDocumentTitle from "../../utils/documentTitle";
 import GetAllProducts from "./GetAllProducts";
+import CategoryName from "./CategoryName";
 
 function Products(props) {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [categories, setCategories] = useState([]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("https://coffeeshop.ngrok.app/api/category?sortBy=CategoryId&isAscending=true&page=1&pageSize=10");
+        const data = await response.json();
+        console.log("Categories API Response:", data); // Log dữ liệu trả về
+        setCategories(data.items || []); // Kiểm tra xem có "items" không
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setCategories([]);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+  
+
+  // Set default search parameter
   useEffect(() => {
     if (location.pathname === "/products" && !searchParams.has("q")) {
       setSearchParams({ q: "all" });
@@ -18,15 +38,11 @@ function Products(props) {
 
   useDocumentTitle(props.title);
 
-  // Hàm cập nhật bộ lọc
+  // Update filter
   const handleFilterChange = (type) => {
     const currentSortBy = searchParams.get("sortBy");
     const currentOrder = searchParams.get("order") || "asc";
-
-    // Đổi trạng thái tăng/giảm dần
     const newOrder = currentSortBy === type && currentOrder === "asc" ? "desc" : "asc";
-
-    // Cập nhật `searchParams`
     setSearchParams({ ...Object.fromEntries(searchParams), sortBy: type, order: newOrder });
   };
 
@@ -37,34 +53,21 @@ function Products(props) {
         <section className="flex-[2_2_0%] flex flex-col md:pl-16 py-5">
           {/* Tabs */}
           <nav className="list-none flex flex-row md:justify-between justify-evenly flex-wrap gap-5 mb-10">
-            <li>
-              <NavLink to="/products?q=all" end className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
-                All
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/products/category/1" className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
-                Espresso
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/products/category/2" className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
-                Cappuccino
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/products/category/3" className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
-                Latte
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/products/category/4" className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
-                Americano
-              </NavLink>
-            </li>
-          </nav>
+  <li>
+    <NavLink to="/products?q=all" end className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
+      All
+    </NavLink>
+  </li>
+  {categories?.map((category) => (
+    <li key={category.CategoryId}>
+      <NavLink to={`/products/category/${category.CategoryId}`} className={({ isActive }) => isActive ? "text-white bg-primary px-4 py-2 rounded-full shadow-md" : "text-gray-600"}>
+        <CategoryName categoryId={category.CategoryId} /> {/* Dùng component lấy tên từ API */}
+      </NavLink>
+    </li>
+  ))}
+</nav>
 
-          {/* Bộ lọc */}
+          {/* Filters */}
           <div className="flex justify-center gap-6 mb-8">
             <button
               onClick={() => handleFilterChange("price")}
@@ -84,7 +87,7 @@ function Products(props) {
             </button>
           </div>
 
-          {/* Danh sách sản phẩm */}
+          {/* Product List */}
           <Routes>
             <Route index element={<GetAllProducts />} />
             <Route path="category/:catId" element={<GetAllProducts />} />
