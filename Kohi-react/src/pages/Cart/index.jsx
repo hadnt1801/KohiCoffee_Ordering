@@ -1,4 +1,3 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import { isEmpty } from "lodash";
 import { toast } from "react-hot-toast";
@@ -78,11 +77,39 @@ function Cart() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleCreateOrder = async (
+  // const handleCreateOrder = async (
 
-  ) => {
+  // ) => {
+  //   try {
+  //     const payload = {
+  //       OrderDate: new Date().toISOString(),
+  //       OrderCode: `ORD-${Date.now()}`,
+  //       OrderDescription: "Thanh toán đơn hàng tại máy",
+  //       TotalAmount: parseFloat(product?.price || 0),
+  //       Status: 0, // Chưa xác nhận
+  //       CustomerId: 0, // Cần thay đổi theo user thực tế
+  //       MachineId: 1,  // Cần thay đổi theo dữ liệu thực tế
+  //     };
+
+  //     await axiosInstance.post("https://coffeeshop.ngrok.app/api/orders", payload);
+  //     toast.success("Đặt hàng thành công!");
+  //     return true;
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || "Đã có lỗi khi đặt hàng!");
+  //     return false;
+  //   }
+  // };
+
+  const payHandler = async () => {
+    if (!form.payment || (form.payment === "1" && (!form.kohiUserName || !form.kohiPassword || !isVerified))) {
+      return;
+    }
+  
+    setIsLoading(true);
+  
     try {
-      const payload = {
+      // 🛒 **Bước 1: Tạo đơn hàng**
+      const orderPayload = {
         OrderDate: new Date().toISOString(),
         OrderCode: `ORD-${Date.now()}`,
         OrderDescription: "Thanh toán đơn hàng tại máy",
@@ -91,46 +118,56 @@ function Cart() {
         CustomerId: 0, // Cần thay đổi theo user thực tế
         MachineId: 1,  // Cần thay đổi theo dữ liệu thực tế
       };
-
-      await axiosInstance.post("https://coffeeshop.ngrok.app/api/orders", payload);
-      toast.success("Đặt hàng thành công!");
-      return true;
+  
+      const orderResponse = await axiosInstance.post("https://coffeeshop.ngrok.app/api/orders", orderPayload);
+      if (!orderResponse.data || !orderResponse.data.orderId) {
+        throw new Error("Không thể tạo đơn hàng");
+      }
+  
+      const orderId = orderResponse.data.orderId; // 📌 Lấy orderId từ API đơn hàng
+  
+      // 💳 **Bước 2: Gửi thanh toán**
+      let paymentResponse;
+      if (form.payment === "1") {
+        // Thanh toán qua Ví KOHI
+        paymentResponse = await axiosInstance.post("https://coffeeshop.ngrok.app/api/payments/wallet", {
+          orderId,
+        });
+      } else {
+        // Thanh toán qua VNPay
+        paymentResponse = await axiosInstance.post("https://coffeeshop.ngrok.app/api/payments/vnpay", {
+          orderId,
+          amount: parseFloat(product?.price || 0),
+        });
+        
+      }
+  
+      if (paymentResponse.status === 200) {
+        toast.success("Giao dịch thành công!");
+        dispatch(cartActions.resetCart());
+        
+        // 🔄 **Bước 3: Chuyển hướng sang trang thành công**
+        navigate("/successful", {
+          state: {
+            orderId: `#${orderId}`,
+            amount: `${n_f(product?.price)} VND`,
+            paymentMethod: form.payment === "1" ? "Ví KOHI" : "Bank account",
+            orderDescription: product?.productName,
+            customerId: 1,
+            machineId: 1,
+          },
+        });
+      } else {
+        throw new Error("Thanh toán thất bại!");
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Đã có lỗi khi đặt hàng!");
-      return false;
+      toast.error(error.response?.data?.message || "Lỗi khi thanh toán!");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const payHandler = async () => {
-    if (!form.payment || (form.payment === "1" && (!form.kohiUserName || !form.kohiPassword || !isVerified))) {
-      return;
-    }
-
-    setIsLoading(true);
-    
-    const orderSuccess = await handleCreateOrder();
-    if (!orderSuccess) {
-      setIsLoading(false);
-      return;
-    }
-
-    setTimeout(() => {
-      const randomOrderId = `#${Math.floor(100000 + Math.random() * 900000)}`;
-      toast.success("Giao dịch thành công!");
-      dispatch(cartActions.resetCart());
-      navigate("/successful", {
-        state: {
-          orderId: randomOrderId,
-          amount: `${n_f(product?.price)} VND`,
-          paymentMethod: form.payment === "1" ? "Ví KOHI" : "Bank account",
-          orderDescription: product?.productName,
-          customerId: 1,
-          machineId: 1,
-        },
-      });
-      setIsLoading(false);
-    }, 2000);
-  };
+  
+  
 
   const handleRemoveProduct = () => {
     navigate("/products?q=all");
@@ -188,7 +225,7 @@ function Cart() {
             </label>
           </div>
 
-          <button onClick={payHandler} onChange={handleCreateOrder} className="mt-6 w-full bg-green-500 text-white p-3 rounded font-bold disabled:bg-gray-400" disabled={!form.payment || !product || (form.payment === "1" && !isVerified)}>
+          <button onClick={payHandler} className="mt-6 w-full bg-green-500 text-white p-3 rounded font-bold disabled:bg-gray-400" disabled={!form.payment || !product || (form.payment === "1" && !isVerified)}>
             Xác nhận & Thanh toán
           </button>
         </div>
