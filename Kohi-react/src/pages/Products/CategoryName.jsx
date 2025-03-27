@@ -6,7 +6,7 @@ const CategoryName = ({ categoryId }) => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await fetch(`https://coffeeshop.ngrok.app/api/category/${categoryId}`);
+        const response = await fetch(`https://coffeeshop.ngrok.app/api/categories/${categoryId}`);
         const data = await response.json();
         setCategoryName(data.categoryName || "Unknown"); // Cập nhật đúng field
       } catch (error) {

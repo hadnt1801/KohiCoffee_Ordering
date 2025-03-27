@@ -37,7 +37,7 @@ function Cart() {
       try {
         setIsLoading(true);
         console.log(`Fetching product with ID: ${productId}`); // Debug ID
-        const response = await fetch(`https://coffeeshop.ngrok.app/api/product/${productId}`);
+        const response = await fetch(`https://coffeeshop.ngrok.app/api/products/${productId}`);
         const data = await response.json();
         console.log("API Response:", data); // Debug response
         if (response.ok) {
@@ -95,6 +95,9 @@ function Cart() {
           orderId: randomOrderId,
           amount: `${n_f(product?.price)} VND`,
           paymentMethod: form.payment === "1" ? "Ví KOHI" : "Bank account",
+          orderDescription: product?.productName, // Truyền tên sản phẩm vào đây
+          customerId: 1, // Thay bằng dữ liệu thực tế nếu có
+          machineId: 1,  // Thay bằng dữ liệu thực tế nếu có
         },
       });
       setIsLoading(false);
@@ -117,7 +120,10 @@ function Cart() {
           ) : product ? (
             <div className="flex items-center gap-4 border-b pb-4 justify-between">
               <div className="flex items-center gap-4">
-                <img src={isEmpty(product?.img) ? productPlaceholder : product?.img} alt="Product" className="w-20 h-20 object-cover rounded-lg" />
+                <img
+                  src={product.path ? `https://coffeeshop.ngrok.app/api/products/image${product.path}` : productPlaceholder}
+                  alt={product.productName}
+                  className="w-20 h-20 object-cover rounded-lg" />
                 <div>
                   <p className="font-semibold">{product?.productName}</p>
                   <p className="text-lg text-gray-700">{n_f(product?.price)} VND</p>

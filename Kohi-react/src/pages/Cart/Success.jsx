@@ -7,31 +7,33 @@ import Header from "../../components/Header";
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { orderId, amount, paymentMethod } = location.state || {
+  const { orderId, amount, paymentMethod, customerId, machineId } = location.state || {
     orderId: 0,
     amount: "0đ",
     paymentMethod: "Chưa xác định",
+    customerId: null,
+    machineId: null,
   };
 
   const [countdown, setCountdown] = useState(3);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Gửi thông tin thanh toán đến API
-    const savePayment = async () => {
+    const saveOrder = async () => {
       try {
-        const response = await fetch("https://coffeeshop.ngrok.app/api/payment", {
+        const response = await fetch("https://coffeeshop.ngrok.app/api/orders", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            paymentId: 0, // Hệ thống backend sẽ tự tạo ID
-            paymentMethod: paymentMethod,
-            paymentDate: new Date().toISOString(),
-            paymentStatus: 1, // 1: Đã thanh toán
-            status: 1, // Trạng thái thành công
-            orderId: orderId,
+            OrderDate: new Date().toISOString(),
+            OrderCode: `ORD-${Date.now()}`, // Sinh mã đơn hàng tạm thời
+            OrderDescription: "Thanh toán đơn hàng tại máy",
+            TotalAmount: parseFloat(amount.replace(/[^\d.]/g, "")), // Chuyển số tiền về dạng số
+            Status: 1, // 1: Thành công
+            CustomerId: customerId && customerId !== 0 ? customerId : null, // Nếu CustomerId = 0, đặt null
+            MachineId: machineId || 1, // Nếu không có MachineId, đặt mặc định là 0
           }),
         });
 
@@ -39,14 +41,14 @@ export default function PaymentSuccess() {
           throw new Error(`Lỗi ${response.status}: ${response.statusText}`);
         }
 
-        console.log("Lưu thanh toán thành công");
+        console.log("Lưu đơn hàng thành công");
       } catch (err) {
-        console.error("Lỗi khi lưu thanh toán:", err.message);
-        setError("Không thể lưu thông tin thanh toán. Vui lòng thử lại.");
+        console.error("Lỗi khi lưu đơn hàng:", err.message);
+        setError("Không thể lưu đơn hàng. Vui lòng thử lại.");
       }
     };
 
-    savePayment();
+    saveOrder();
 
     // Bắt đầu đếm ngược để chuyển trang
     const interval = setInterval(() => {
@@ -67,7 +69,7 @@ export default function PaymentSuccess() {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, [navigate, orderId, paymentMethod]);
+  }, [navigate, orderId, amount, paymentMethod, customerId, machineId]);
 
   return (
     <div className="flex flex-col min-h-screen">
