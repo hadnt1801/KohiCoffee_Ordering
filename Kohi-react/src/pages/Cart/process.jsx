@@ -6,7 +6,7 @@ import Header from '../../components/Header';
 
 const ProcessingOrders = () => {
   const navigate = useNavigate();
-  const [order, setOrder] = useState({ id: 1, product: "Cà phê sữa", status: "processing" });
+  const [order, setOrder] = useState({ id: 1, status: "processing" });
   const [timeoutId, setTimeoutId] = useState(null);
   const [countdown, setCountdown] = useState(120); // 120 giây (2 phút)
 
@@ -62,7 +62,6 @@ const ProcessingOrders = () => {
         <h1 className="text-xl font-bold">Đơn hàng đang xử lý</h1>
         <div className="border border-gray-300 rounded-lg p-6 mt-4 w-80 text-center">
           <div>
-            <p className="text-lg font-semibold">{order.product}</p>
             <p className="text-gray-500 text-sm">Mã đơn: #{order.id}</p>
           </div>
 

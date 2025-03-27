@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
-import { toast } from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import loadingImage from '../../assets/images/loading.svg';
-import productPlaceholder from '../../assets/images/placeholder-image.webp';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
-import { cartActions } from '../../redux/slices/cart.slice';
-import useDocumentTitle from '../../utils/documentTitle';
-import { n_f } from '../../utils/helpers';
-import { FaTrash } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { isEmpty } from "lodash";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {axiosInstance} from "../../axios/Axios"; // Import Axios instance
+import loadingImage from "../../assets/images/loading.svg";
+import productPlaceholder from "../../assets/images/placeholder-image.webp";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import { cartActions } from "../../redux/slices/cart.slice";
+import useDocumentTitle from "../../utils/documentTitle";
+import { n_f } from "../../utils/helpers";
+import { FaTrash } from "react-icons/fa";
 
 function Cart() {
   const cartRedux = useSelector((state) => state.cart);
@@ -36,10 +38,8 @@ function Cart() {
       if (!productId) return;
       try {
         setIsLoading(true);
-        console.log(`Fetching product with ID: ${productId}`); // Debug ID
         const response = await fetch(`https://coffeeshop.ngrok.app/api/products/${productId}`);
         const data = await response.json();
-        console.log("API Response:", data); // Debug response
         if (response.ok) {
           setProduct(data);
           dispatch(cartActions.replaceCart({ items: [data] }));
@@ -47,16 +47,14 @@ function Cart() {
           toast.error("Không thể tải dữ liệu sản phẩm");
         }
       } catch (error) {
-        console.error("Lỗi fetch:", error);
         toast.error("Lỗi khi lấy dữ liệu sản phẩm");
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchProduct();
   }, [dispatch, productId]);
-  
 
   const handlePaymentChange = (e) => {
     setForm((prev) => ({ ...prev, payment: e.target.value }));
@@ -67,7 +65,7 @@ function Cart() {
       toast.error("❌ Vui lòng nhập đầy đủ thông tin đăng nhập.");
       return;
     }
-    if (form.kohiUserName === "testuser" && form.kohiPassword === "123456") {
+    if (form.kohiUserName === "test@example.com" && form.kohiPassword === "123456") {
       setIsVerified(true);
       toast.success("✅ Xác thực thành công!");
     } else {
@@ -80,12 +78,42 @@ function Cart() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const payHandler = () => {
+  const handleCreateOrder = async (
+
+  ) => {
+    try {
+      const payload = {
+        OrderDate: new Date().toISOString(),
+        OrderCode: `ORD-${Date.now()}`,
+        OrderDescription: "Thanh toán đơn hàng tại máy",
+        TotalAmount: parseFloat(product?.price || 0),
+        Status: 0, // Chưa xác nhận
+        CustomerId: 0, // Cần thay đổi theo user thực tế
+        MachineId: 1,  // Cần thay đổi theo dữ liệu thực tế
+      };
+
+      await axiosInstance.post("https://coffeeshop.ngrok.app/api/orders", payload);
+      toast.success("Đặt hàng thành công!");
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Đã có lỗi khi đặt hàng!");
+      return false;
+    }
+  };
+
+  const payHandler = async () => {
     if (!form.payment || (form.payment === "1" && (!form.kohiUserName || !form.kohiPassword || !isVerified))) {
       return;
     }
 
     setIsLoading(true);
+    
+    const orderSuccess = await handleCreateOrder();
+    if (!orderSuccess) {
+      setIsLoading(false);
+      return;
+    }
+
     setTimeout(() => {
       const randomOrderId = `#${Math.floor(100000 + Math.random() * 900000)}`;
       toast.success("Giao dịch thành công!");
@@ -95,14 +123,13 @@ function Cart() {
           orderId: randomOrderId,
           amount: `${n_f(product?.price)} VND`,
           paymentMethod: form.payment === "1" ? "Ví KOHI" : "Bank account",
-          orderDescription: product?.productName, // Truyền tên sản phẩm vào đây
-          customerId: 1, // Thay bằng dữ liệu thực tế nếu có
-          machineId: 1,  // Thay bằng dữ liệu thực tế nếu có
+          orderDescription: product?.productName,
+          customerId: 1,
+          machineId: 1,
         },
       });
       setIsLoading(false);
     }, 2000);
-    
   };
 
   const handleRemoveProduct = () => {
@@ -123,7 +150,8 @@ function Cart() {
                 <img
                   src={product.path ? `https://coffeeshop.ngrok.app/api/products/image${product.path}` : productPlaceholder}
                   alt={product.productName}
-                  className="w-20 h-20 object-cover rounded-lg" />
+                  className="w-20 h-20 object-cover rounded-lg"
+                />
                 <div>
                   <p className="font-semibold">{product?.productName}</p>
                   <p className="text-lg text-gray-700">{n_f(product?.price)} VND</p>
@@ -160,7 +188,7 @@ function Cart() {
             </label>
           </div>
 
-          <button onClick={payHandler} className="mt-6 w-full bg-green-500 text-white p-3 rounded font-bold disabled:bg-gray-400" disabled={!form.payment || !product || (form.payment === "1" && !isVerified)}>
+          <button onClick={payHandler} onChange={handleCreateOrder} className="mt-6 w-full bg-green-500 text-white p-3 rounded font-bold disabled:bg-gray-400" disabled={!form.payment || !product || (form.payment === "1" && !isVerified)}>
             Xác nhận & Thanh toán
           </button>
         </div>
