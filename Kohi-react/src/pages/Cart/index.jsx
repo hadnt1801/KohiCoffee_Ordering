@@ -77,29 +77,6 @@ function Cart() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // const handleCreateOrder = async (
-
-  // ) => {
-  //   try {
-  //     const payload = {
-  //       OrderDate: new Date().toISOString(),
-  //       OrderCode: `ORD-${Date.now()}`,
-  //       OrderDescription: "Thanh toán đơn hàng tại máy",
-  //       TotalAmount: parseFloat(product?.price || 0),
-  //       Status: 0, // Chưa xác nhận
-  //       CustomerId: 0, // Cần thay đổi theo user thực tế
-  //       MachineId: 1,  // Cần thay đổi theo dữ liệu thực tế
-  //     };
-
-  //     await axiosInstance.post("https://coffeeshop.ngrok.app/api/orders", payload);
-  //     toast.success("Đặt hàng thành công!");
-  //     return true;
-  //   } catch (error) {
-  //     toast.error(error.response?.data?.message || "Đã có lỗi khi đặt hàng!");
-  //     return false;
-  //   }
-  // };
-
   const payHandler = async () => {
     if (!form.payment || (form.payment === "1" && (!form.kohiUserName || !form.kohiPassword || !isVerified))) {
       return;
